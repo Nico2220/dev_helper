@@ -1,0 +1,6 @@
+{
+    "mongoURI" : "mongodb+srv://Nico20:nico20@cluster0.t4jqb.mongodb.net/test?retryWrites=true&w=majority",
+    "secretKey" : "secretToken",
+    "githubClientID": "e3936358d56c31e14862",
+    "githubClientSecret": "5e46014a417a9f41833af4d643cfaa875e6065d9"
+}
