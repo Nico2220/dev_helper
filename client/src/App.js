@@ -8,6 +8,8 @@ import { Alert } from "./features/alerts/Alert";
 import "./App.css";
 import setAuthtoken from "./utils/setAuthToken";
 import { loadUser } from "./features/users/usersSlices";
+import { Dashboard } from "./app/dashboard/Dashboard";
+import { PrivateRoute } from "./routing/PrivateRoute";
 
 import store from "./app/store";
 
@@ -28,8 +30,9 @@ function App() {
         <section className="container">
           <Alert />
           <Switch>
-            <Route exact path="/login" component={Login}></Route>
-            <Route exact path="/register" component={Register}></Route>
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={Register} />
+            <PrivateRoute exact path="/dashboard" component={Dashboard} />
           </Switch>
         </section>
       </Fragment>

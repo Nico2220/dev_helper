@@ -15,18 +15,19 @@ const usersSlice = createSlice({
   initialState,
 
   reducers: {
-    registerSuccess: (state, action) => {
+    requestSuccess: (state, action) => {
       localStorage.setItem("token", action.payload.token);
-      state.isAuthenticated = true;
+      state.isAuthenticated = false;
       state.loading = false;
       state.token = action.payload.token;
     },
 
-    registerFailed: (state, action) => {
+    requestFailed: (state, action) => {
       localStorage.removeItem("token");
       state.isAuthenticated = false;
       state.loading = false;
       state.token = null;
+      state.user = null;
     },
 
     userLoaded: (state, action) => {
@@ -34,47 +35,10 @@ const usersSlice = createSlice({
       state.loading = false;
       state.user = action.payload;
     },
-
-    authError: (state, action) => {
-      localStorage.removeItem("token");
-      state.isAuthenticated = false;
-      state.loading = false;
-      state.token = null;
-    },
-
-    loginSuccess: (state, action) => {
-      localStorage.setItem("token", action.payload.token);
-      state.isAuthenticated = true;
-      state.loading = false;
-      state.token = action.payload.token;
-    },
-
-    loginFailed: (state, action) => {
-      localStorage.removeItem("token");
-      state.isAuthenticated = false;
-      state.loading = false;
-      state.token = null;
-    },
-
-    logout: (state, action) => {
-      localStorage.removeItem("token");
-      state.isAuthenticated = false;
-      state.loading = false;
-      state.token = null;
-      state.user = null;
-    },
   },
 });
 
-export const {
-  registerSuccess,
-  registerFailed,
-  userLoaded,
-  authError,
-  loginSuccess,
-  loginFailed,
-  logout,
-} = usersSlice.actions;
+export const { requestSuccess, requestFailed, userLoaded } = usersSlice.actions;
 
 export const loadUser = () => async (dispatch) => {
   if (localStorage.token) {
@@ -84,7 +48,7 @@ export const loadUser = () => async (dispatch) => {
     const res = await axios.get("/api/auth");
     dispatch(userLoaded(res.data));
   } catch (err) {
-    dispatch(authError());
+    dispatch(requestFailed());
   }
 };
 
@@ -100,7 +64,7 @@ export const register = ({ name, email, password }) => async (dispatch) => {
   try {
     const res = await axios.post("/api/users", body, config);
 
-    dispatch(registerSuccess(res.data));
+    dispatch(requestSuccess(res.data));
     dispatch(loadUser());
   } catch (err) {
     const errors = err.response.data.errors;
@@ -110,7 +74,7 @@ export const register = ({ name, email, password }) => async (dispatch) => {
         dispatch(setAlert({ msg: error.msg, alertType: "danger" }))
       );
     }
-    dispatch(registerFailed());
+    dispatch(requestFailed());
   }
 };
 
@@ -126,7 +90,7 @@ export const login = (email, password) => async (dispatch) => {
   try {
     const res = await axios.post("/api/auth", body, config);
 
-    dispatch(loginSuccess(res.data));
+    dispatch(requestSuccess(res.data));
     dispatch(loadUser());
   } catch (err) {
     const errors = err.response.data.errors;
@@ -136,7 +100,7 @@ export const login = (email, password) => async (dispatch) => {
         dispatch(setAlert({ msg: error.msg, alertType: "danger" }))
       );
     }
-    dispatch(loginFailed());
+    dispatch(requestFailed());
   }
 };
 

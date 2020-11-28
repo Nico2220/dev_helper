@@ -1,21 +1,29 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../features/users/usersSlices";
+import { requestFailed } from "../features/users/usersSlices";
+import { clearProfile } from "../features/profiles/profilesSlice";
 
 const Navbar = () => {
+  const onClick = (requestFailed, clearProfile) => {
+    dispatch(requestFailed());
+    dispatch(clearProfile());
+  };
   const dispatch = useDispatch();
   const authLinks = (
     <ul>
       <li>
-        <Link to="/" onClick={() => dispatch(logout())}>
+        <Link to="/dashboard">Dashboard</Link>
+      </li>
+      <li>
+        <Link to="/" onClick={() => onClick(requestFailed, clearProfile)}>
           Logout
         </Link>
       </li>
     </ul>
   );
 
-  const gestLinks = (
+  const guestLinks = (
     <ul>
       <li>
         <Link to="/profiles">Developers</Link>
@@ -39,7 +47,7 @@ const Navbar = () => {
       </h1>
 
       {!auth.loading && (
-        <Fragment>{auth.isAuthenticated ? authLinks : gestLinks}</Fragment>
+        <Fragment>{auth.isAuthenticated ? authLinks : guestLinks}</Fragment>
       )}
     </nav>
   );
